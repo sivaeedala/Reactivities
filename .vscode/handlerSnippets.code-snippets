@@ -1,0 +1,82 @@
+{
+  // Place your Reactivities workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"scope": "javascript,typescript",
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }'
+
+  "QureyHandler": {
+    "prefix": "qhandler",
+    "body": [
+      " public class Query : IRequest<List<${1:example}>>",
+      "        {",
+      "",
+      "        }",
+      "",
+      "        public class Handler : IRequestHandler<Query, ",
+      "List<${1:example}>>",
+      "        {",
+      "",
+      "            private DataContext _context;",
+      "            public Handler(DataContext context)",
+      "            {",
+      "                _context = context;",
+      "",
+      "            }",
+      "",
+      "            public async Task<List<${1:example}>> Handle(Query request,",
+      "            CancellationToken cancellationToken)",
+      "            {",
+      "                ",
+      "            }",
+      "        }"
+    ],
+    "description": "QureyHandler"
+  },
+
+  "CommandHandler": {
+    "prefix": "chandler",
+    "body": [
+      "        public class Command : IRequest",
+      "        {",
+      "            ",
+      "        }",
+      "",
+      "        public class Handler : IRequestHandler<Command>",
+      "        {",
+      "            private readonly DataContext _dataContext;",
+      "",
+      "            public Handler(DataContext dataContext)",
+      "            {",
+      "                _dataContext = dataContext;",
+      "            }",
+      "",
+      "            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)",
+      "            {",
+      "                ",
+      "                var success = await _dataContext.SaveChangesAsync() > 0;",
+      "",
+      "                if (success)",
+      "                {",
+      "                    return Unit.Value;",
+      "                }",
+      "",
+      "                throw new Exception(\"Error in Saving\");",
+      "",
+      "            }",
+      "        }"
+    ],
+    "description": "CommandHandler"
+  }
+}

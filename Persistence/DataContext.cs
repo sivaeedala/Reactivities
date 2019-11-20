@@ -4,21 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
-    public class DataContext:DbContext
+    public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions options) 
+        public DataContext(DbContextOptions options)
         : base(options)
         {
         }
         public DbSet<Value> Values { get; set; }
+        public DbSet<Activity> Activities { get; set; }
 
-        protected  override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Value>()
             .HasData(
-                new Value(){Id=1,Name="101"},
-                new Value(){Id=2,Name="102"},
-                new Value(){Id=3,Name="103"}
+                new Value() { Id = 1, Name = "101" },
+                new Value() { Id = 2, Name = "102" },
+                new Value() { Id = 3, Name = "103" }
             );
 
         }
