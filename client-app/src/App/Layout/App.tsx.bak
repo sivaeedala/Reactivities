@@ -1,0 +1,47 @@
+import React, { Component } from "react";
+import axios from "axios";
+import { Header, Icon, List } from "semantic-ui-react";
+import { IActivity } from "../Models/activity";
+
+interface IState {
+  activities: IActivity[];
+}
+
+export default class App extends Component<{}, IState> {
+  state: IState = {
+    activities: []
+  };
+
+  componentDidMount() {
+    axios
+      .get<IActivity[]>("http://localhost:5000/api/activity")
+      .then(response => {
+        this.setState({
+          activities: response.data
+        });
+      });
+  }
+  render() {
+    return (
+      <div>
+        <Header as="h2">
+          <Icon name="users" />
+          <Header.Content>Reactivities</Header.Content>
+        </Header>
+        <List>
+          <ul>
+            {this.state.activities.map(activity => {
+              return (
+                <li>
+                  {activity.id} - {activity.title} -{activity.category}
+                </li>
+              );
+            })}
+          </ul>
+        </List>
+      </div>
+    );
+  }
+}
+
+// export default App;
