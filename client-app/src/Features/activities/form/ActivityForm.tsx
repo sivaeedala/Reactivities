@@ -8,13 +8,15 @@ interface IPorps {
   activity: IActivity;
   handleSubmit: (activity: IActivity) => void;
   handleEdit: (activity: IActivity) => void;
+  submitting: boolean;
 }
 
 const ActivityForm: React.FC<IPorps> = ({
   setEditMode,
   activity: initilizeFormActivity,
   handleEdit,
-  handleSubmit
+  handleSubmit,
+  submitting
 }) => {
   const initilizeForm = () => {
     if (initilizeFormActivity) {
@@ -77,7 +79,7 @@ const ActivityForm: React.FC<IPorps> = ({
             value={activity.category}
           ></Form.Input>
           <Form.Input
-            type="dateTimeLocal"
+            type="dateTime-local"
             name="date"
             onChange={handleInputChange}
             placeholder="date"
@@ -95,7 +97,13 @@ const ActivityForm: React.FC<IPorps> = ({
             onChange={handleInputChange}
             value={activity.venue}
           ></Form.Input>
-          <Button floated="right" positive type="submit" content="Submit" />
+          <Button
+            loading={submitting}
+            floated="right"
+            positive
+            type="submit"
+            content="Submit"
+          />
           <Button
             onClick={() => setEditMode(false)}
             floated="right"
