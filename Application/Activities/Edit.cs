@@ -42,14 +42,14 @@ namespace Application.Activities
                 activity.City = request.City ?? activity.City;
                 activity.Venue = request.Venue ?? activity.Venue;
 
+                int x = await _dataContext.SaveChangesAsync();
 
-                var success = await _dataContext.SaveChangesAsync() > 0;
+                var success = x > 0;
 
                 if (success)
                 {
                     return Unit.Value;
                 }
-
                 throw new Exception("Error in Saving");
 
             }

@@ -1,31 +1,29 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Card, Image, Button } from "semantic-ui-react";
-import { IActivity } from "../../../App/Models/activity";
+import ActivityStore from "../../../App/Stores/activityStore";
+import { observer } from "mobx-react-lite";
 
-interface IProps {
-  activity: IActivity;
-  setEditMode: (editmode: boolean) => void;
-  setSelectedActivity: (activity: IActivity | null) => void;
-}
+const ActivityDetails: React.FC = () => {
+  const activityStore = useContext(ActivityStore);
+  const {
+    selectedActivity: activity,
+    openEditForm,
+    cancelSelectedActivity
+  } = activityStore;
 
-const ActivityDetails: React.FC<IProps> = ({
-  activity,
-  setEditMode,
-  setSelectedActivity
-}) => {
   return (
     <Card fluid>
       <Image
-        src={`/assets/categoryImages/${activity.category}.jpg`}
+        src={`/assets/categoryImages/${activity!.category}.jpg`}
         wrapped
         ui={false}
       />
       <Card.Content>
-        <Card.Header>{activity.title}</Card.Header>
+        <Card.Header>{activity!.title}</Card.Header>
         <Card.Meta>
-          <span>{activity.date}</span>
+          <span>{activity!.date}</span>
         </Card.Meta>
-        <Card.Description>{activity.description}</Card.Description>
+        <Card.Description>{activity!.description}</Card.Description>
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths={2}>
@@ -33,10 +31,10 @@ const ActivityDetails: React.FC<IProps> = ({
             basic
             content="Edit"
             color="blue"
-            onClick={() => setEditMode(true)}
+            onClick={() => openEditForm(activity!.id)}
           ></Button>
           <Button
-            onClick={() => setSelectedActivity(null)}
+            onClick={cancelSelectedActivity}
             basic
             content="Cancel"
             color="grey"
@@ -47,4 +45,4 @@ const ActivityDetails: React.FC<IProps> = ({
   );
 };
 
-export default ActivityDetails;
+export default observer(ActivityDetails);
