@@ -1,19 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Menu, Button, Container } from "semantic-ui-react";
-import ActivityStore from "../../App/Stores/activityStore";
 import { observer } from "mobx-react-lite";
+import { Link, NavLink } from "react-router-dom";
 
-interface IProps {
-  // handleCreateFrom: () => void;
-}
-
-const Navbar: React.FC<IProps> = () => {
-  const activityStore = useContext(ActivityStore);
-  const { openCreatForm } = activityStore;
+const Navbar: React.FC = () => {
   return (
     <Menu fixed="top" inverted>
       <Container>
-        <Menu.Item>
+        <Menu.Item exact as={NavLink} to="/">
           <img
             src="/assets/logo.png"
             alt="logo"
@@ -21,12 +15,13 @@ const Navbar: React.FC<IProps> = () => {
           ></img>
           Reactivities
         </Menu.Item>
-        <Menu.Item name="Activities" />
+        <Menu.Item name="Activities" as={NavLink} to="/activities" />
         <Menu.Item>
           <Button
+            as={Link}
             positive
             content="Create Activity"
-            onClick={openCreatForm}
+            to="/createActivity"
           ></Button>
         </Menu.Item>
       </Container>
