@@ -1,43 +1,75 @@
-import React, { useState, FormEvent, useContext } from "react";
+import React, { useState, FormEvent, useContext, useEffect } from "react";
 import { Form, Button, Segment } from "semantic-ui-react";
 import { IActivity } from "../../../App/Models/activity";
 import { v4 as uuid } from "uuid";
 import ActivityStore from "../../../App/Stores/activityStore";
 import { observer } from "mobx-react-lite";
+import { RouteComponentProps } from "react-router";
 
-interface IPorps {
-  activity: IActivity;
+interface IDetails {
+  id: string;
 }
 
-const ActivityForm: React.FC<IPorps> = ({
-  activity: initilizeFormActivity
+const ActivityForm: React.FC<RouteComponentProps<IDetails>> = ({
+  match,
+  history
 }) => {
   const activitystore = useContext(ActivityStore);
   const {
     createActivity,
     editActivity,
-    cancelOpenForm,
-    submitting
+    submitting,
+    activity: initilizeFormActivity, // alias name to activity.
+    loadActivity,
+    clearActivity
   } = activitystore;
-  console.log("submitting", submitting);
 
-  const initilizeForm = () => {
-    if (initilizeFormActivity) {
-      return initilizeFormActivity;
-    } else {
-      return {
-        id: "",
-        title: "",
-        description: "",
-        category: "",
-        date: "",
-        city: "",
-        venue: ""
-      };
+  // const initilizeForm = () => {
+  //   if (initilizeFormActivity) {
+  //     return initilizeFormActivity;
+  //   } else {
+  //     return {
+  //       id: "",
+  //       title: "",
+  //       description: "",
+  //       category: "",
+  //       date: "",
+  //       city: "",
+  //       venue: ""
+  //     };
+  //   }
+  // };
+
+  const [activity, setActivity] = useState<IActivity>({
+    id: "",
+    title: "",
+    description: "",
+    category: "",
+    date: "",
+    city: "",
+    venue: ""
+  });
+
+  useEffect(() => {
+    if (match.params.id && activity.id.length === 0) {
+      loadActivity(match.params.id).then(() => {
+        // added this to setActivity after activity is loaded from mobx store
+        // during the refresh of browser, where useState is running before loadActivity completed
+        // And extra condition is that if Activity exists then SetActivity.
+        initilizeFormActivity && setActivity(initilizeFormActivity);
+      });
     }
-  };
 
-  const [activity, setActivity] = useState<IActivity>(initilizeForm);
+    return () => {
+      clearActivity();
+    };
+  }, [
+    match.params.id,
+    loadActivity,
+    initilizeFormActivity,
+    clearActivity,
+    activity.id.length
+  ]);
 
   const handleInputChange = (
     event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -53,9 +85,13 @@ const ActivityForm: React.FC<IPorps> = ({
     if (activity.id.length === 0) {
       let newActivity = { ...activity, id: uuid() };
       //handleSubmit(newActivity);
-      createActivity(newActivity);
+      createActivity(newActivity).then(() => {
+        history.push(`/activities/${newActivity.id}`);
+      });
     } else {
-      editActivity(activity);
+      editActivity(activity).then(() => {
+        history.push(`/activities/${activity.id}`);
+      });
     }
   };
 
@@ -109,7 +145,7 @@ const ActivityForm: React.FC<IPorps> = ({
             content="Submit"
           />
           <Button
-            onClick={cancelOpenForm}
+            onClick={() => history.push("/activities")}
             floated="right"
             type="button"
             content="Cancel"

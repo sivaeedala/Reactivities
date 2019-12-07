@@ -1,29 +1,37 @@
-import React, { useEffect, Fragment, useContext } from "react";
+import React, { Fragment } from "react";
 import { Container } from "semantic-ui-react";
 import Navbar from "../../Features/nav/Navbar";
 import ActiviyDashboard from "../../Features/activities/dashboard/ActiviyDashboard";
-import LoadingComponent from "./LoadingComponent";
-import ActivityStore from "../Stores/activityStore";
 import { observer } from "mobx-react-lite";
+import { Route, withRouter, RouteComponentProps } from "react-router";
+import home from "../../Features/home/home";
+import ActivityForm from "../../Features/activities/form/ActivityForm";
+import ActivityDetails from "../../Features/activities/details/ActivityDetails";
 
-const App = () => {
-  const activityStore = useContext(ActivityStore);
-  // Used for Fetching ActivityData from API
-  useEffect(() => {
-    activityStore.loadingActivities();
-  }, [activityStore]);
-
-  if (activityStore.loadingInitial)
-    return <LoadingComponent content="Loading Activities"></LoadingComponent>;
-
+const App: React.FC<RouteComponentProps> = ({ location }) => {
   return (
     <Fragment>
-      <Navbar></Navbar>
-      <Container style={{ marginTop: "7em" }}>
-        <ActiviyDashboard />
-      </Container>
+      <Route exact path="/" component={home} />
+      <Route
+        path="/(.+)"
+        render={() => (
+          <Fragment>
+            <Navbar></Navbar>
+            <Container style={{ marginTop: "7em" }}>
+              <Route exact path="/activities" component={ActiviyDashboard} />
+              <Route path="/activities/:id" component={ActivityDetails}></Route>
+              <Route
+                key={location.key}
+                path={["/createActivity", "/edit/:id"]}
+                component={ActivityForm}
+              />
+              {/* <Route path="/editActivity/:id" component={ActivityForm} /> */}
+            </Container>
+          </Fragment>
+        )}
+      />
     </Fragment>
   );
 };
 
-export default observer(App);
+export default withRouter(observer(App)); // withRouter which allows to get loaction
